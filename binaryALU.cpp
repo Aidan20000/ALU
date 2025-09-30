@@ -36,37 +36,28 @@ std::pair<int, int> fullAdd(int num1, int num2, int carry){
 std::pair<int, int> halfSubtract(int num1, int num2){
     //This does num1 - num2
     int diff = 0, borrow = 0;
-    if(num1 == 1 || num2 == 1){
-        diff = 1;
-    }
-    if(num1 == 1 && num2 == 1){
-        diff = 0;
-    }
-
-    //A not gate for num1
-    if(num1 == 1){
-        num1 = 0;
-    }else {
-        num1 = 1;
-    }
-
-    //Sets borrow to 1 if youre subtracting 1 from 0
-    if(num1 == 1 && num2 == 1){
+    if(num1 == 0 && num2 == 1){
         borrow = 1;
+    } else {
+        borrow = 0;
+    }
+
+    if(!(num1 == 1 && num2 == 1) && (num1 == 1 || num2 == 1)){
+        diff = 1;
     }
     return {diff, borrow};
 }
 
 std::pair<int, int> fullSubtract(int num1, int num2, int borrow){
     //This does num1 - (num2 + borrow)
-    int finalDiff, secondBorrow, finalBorrow;
-    int firstDiff, firstBorrow;
+    int firstDiff, firstBorrow, secondBorrow, finalDiff, finalBorrow = 0;
     std::tie(firstDiff, firstBorrow) = halfSubtract(num1, borrow);
-    std::tie(finalDiff, secondBorrow) = halfSubtract(num1, borrow);
+    std::tie(finalDiff, secondBorrow) = halfSubtract(firstDiff, num2);
 
     if(firstBorrow == 1 || secondBorrow == 1){
         finalBorrow = 1;
     }
+    std::cout << finalBorrow << std::endl;
 
     return {finalDiff, finalBorrow};
 }
@@ -102,9 +93,35 @@ std::string addBinary(std::string num1, std::string num2){
         return finalAnswer;
     }
     return "";
+};
+
+std::string subtractBinary(std::string num1, std::string num2){
+    if(num1.size() == num2.size()){
+        std::string finalAnswer = "";
+        int lastDiff, lastBorrow;
+        int currIndex = num1.size() - 1;
+        std::tie(lastDiff, lastBorrow) = halfSubtract(num1[currIndex] - '0', num2[currIndex] - '0');
+        finalAnswer += (lastDiff + '0');
+        currIndex--;
+        while(currIndex >= 0){
+            std::tie(lastDiff, lastBorrow) = fullSubtract(num1[currIndex] - '0', num2[currIndex] - '0', lastBorrow);
+            finalAnswer += (lastDiff + '0');
+            currIndex--;
+        }
+
+        if(lastBorrow == 1){
+            std::cout << "This program does not work for negative numbers yet" << std::endl;
+            return "ERROR";
+        }
+
+        std::reverse(finalAnswer.begin(), finalAnswer.end());
+
+        return finalAnswer;
+    }
+    return "";
 }
 
 int main() {
-    std::cout << addBinary("", "") << std::endl;
+    std::cout << subtractBinary("10110110", "10000011") << std::endl;
     return 0;
 }
