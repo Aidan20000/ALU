@@ -21,16 +21,20 @@ std::pair<int, int> halfAdd(int num1, int num2){
 }
 
 std::pair<int, int> fullAdd(int num1, int num2, int carry){
+    //Replicates one instance of line division with 2 one digit numbers and a carry that will be 0 or 1
+    //depending on the result of the last addition
+
+    //This function is repeatedly used to add a binary number
     int newCarry = 0;
-    int insideSum, insideCarry;
-    std::tie(insideSum, insideCarry) = halfAdd(num1, num2);
+    int sum, insideCarry;
+    std::tie(sum, insideCarry) = halfAdd(num1, num2);
     int secondInsideCarry;
-    std::tie(insideSum, secondInsideCarry) = halfAdd(insideSum, carry);
+    std::tie(sum, secondInsideCarry) = halfAdd(sum, carry);
 
     if(insideCarry == 1 || secondInsideCarry == 1){
         newCarry = 1;
     }
-    return {insideSum, newCarry};
+    return {sum, newCarry};
 }
 ////Half Subtractor and full subtractor function
 std::pair<int, int> halfSubtract(int num1, int num2){
@@ -50,6 +54,7 @@ std::pair<int, int> halfSubtract(int num1, int num2){
 
 std::pair<int, int> fullSubtract(int num1, int num2, int borrow){
     //This does num1 - (num2 + borrow)
+    //Can be used repeatedly to subtract actual numbers just like full adder function
     int firstDiff, firstBorrow, secondBorrow, finalDiff, finalBorrow = 0;
     std::tie(firstDiff, firstBorrow) = halfSubtract(num1, borrow);
     std::tie(finalDiff, secondBorrow) = halfSubtract(firstDiff, num2);
@@ -96,6 +101,10 @@ std::string addBinary(std::string num1, std::string num2){
 };
 
 std::string subtractBinary(std::string num1, std::string num2){
+    //If the input binary is the same length this function will use the full and half subtractors to do line subtraction
+    //It starts with the last digit of the input and subtracts it and goes from last digit to first digit
+    //Adding '0' turns an int to a char and opposite with subtracting '0'
+    //This function has error checking and will return an error code when neccessary
     if(num1.size() == num2.size()){
         std::string finalAnswer = "";
         int lastDiff, lastBorrow;
@@ -111,14 +120,14 @@ std::string subtractBinary(std::string num1, std::string num2){
 
         if(lastBorrow == 1){
             std::cout << "This program does not work for negative numbers yet" << std::endl;
-            return "ERROR";
+            return "ERROR - Negative Result";
         }
 
         std::reverse(finalAnswer.begin(), finalAnswer.end());
 
         return finalAnswer;
     }
-    return "";
+    return "ERROR - Input strings must be same length";
 }
 
 int main() {
