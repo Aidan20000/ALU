@@ -85,7 +85,7 @@ std::string addBinary(std::string num1, std::string num2){
         currIndex--;
 
         while(currIndex >= 0){
-            std::tie(newSum, newCarry) = fullAdd((num1[currIndex] - '0'), (num2[currIndex] - '0'), (newCarry + '0'));
+            std::tie(newSum, newCarry) = fullAdd((num1[currIndex] - '0'), (num2[currIndex] - '0'), newCarry);
             finalAnswer += (newSum + '0');
             currIndex--;
         }
