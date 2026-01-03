@@ -1,4 +1,4 @@
-module math;   // note: no "export" keyword here
+#include "math.hpp"
 
 #include <iostream>
 #include <string>
@@ -64,7 +64,6 @@ std::pair<int, int> fullSubtract(int num1, int num2, int borrow){
     if(firstBorrow == 1 || secondBorrow == 1){
         finalBorrow = 1;
     }
-    std::cout << finalBorrow << std::endl;
 
     return {finalDiff, finalBorrow};
 }
@@ -75,18 +74,18 @@ std::string addBinary(std::string num1, std::string num2){
     //We set the current index to the last bit in the input sting and add the two numbers at that index
     //This is line addition
     //We use the half adder at first and then full adders and incriment the selected index every time we add 2 digits
-    if(num1.size() == num2.size()){
+    if(num1.size() == num2.size() && num1.size() > 0){
         int newSum, newCarry;
         std::string finalAnswer = "";
-        int currIndex = num1.size();
+        int currIndex = num1.size() - 1;
 
         // Subtracting by '0' converts the character of num[index] to an int that half and full adders use
         std::tie(newSum, newCarry) = halfAdd((num1[currIndex]-'0'), (num2[currIndex]-'0'));
+        finalAnswer += (newSum + '0');
         currIndex--;
-        finalAnswer += char(newSum);
 
         while(currIndex >= 0){
-            std::tie(newSum, newCarry) = fullAdd((num1[currIndex] - '0'), (num2[currIndex] - '0'), char(newCarry));
+            std::tie(newSum, newCarry) = fullAdd((num1[currIndex] - '0'), (num2[currIndex] - '0'), (newCarry + '0'));
             finalAnswer += (newSum + '0');
             currIndex--;
         }
@@ -121,7 +120,6 @@ std::string subtractBinary(std::string num1, std::string num2){
         }
 
         if(lastBorrow == 1){
-            std::cout << "This program does not work for negative numbers yet" << std::endl;
             return "ERROR - Negative Result";
         }
 
